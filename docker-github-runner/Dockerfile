@@ -4,7 +4,7 @@ FROM ubuntu:24.04
 RUN DEBIAN_FRONTEND=noninteractive apt update && apt -y upgrade && \
 	apt install -y bc bison build-essential device-tree-compiler \
 	flex git kmod libncurses-dev libssl-dev python3 \
-	zstd
+	zstd bsdmainutils
 # for checking DTBs
 RUN DEBIAN_FRONTEND=noninteractive apt install -y \
 	libfdt-dev python3-dev python3-libfdt python3-venv swig
