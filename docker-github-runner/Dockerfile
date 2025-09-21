@@ -11,6 +11,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y \
 # useful utils for manual work and pmbootstrap deps
 RUN DEBIAN_FRONTEND=noninteractive apt install -y \
 	nano htop neofetch opendoas kpartx
+# U-Boot build deps
+RUN DEBIAN_FRONTEND=noninteractive apt install -y xxd libgnutls28-dev
+# GCC Cross-compiler - needed only on x86_64 host
+RUN DEBIAN_FRONTEND=noninteractive apt install -y gcc-aarch64-linux-gnu
 
 # add user & group for runner (GID & UID match the same user on host)
 RUN groupadd --gid 1003 developers
@@ -21,9 +25,9 @@ RUN useradd -c "GitHub actions runner user" \
 
 # copy and extract actions-runner application
 WORKDIR /opt/runner
-COPY        actions-runner-linux-arm64.tar.gz /opt/runner/
-RUN tar xzf actions-runner-linux-arm64.tar.gz
-RUN rm -f   actions-runner-linux-arm64.tar.gz
+COPY        actions-runner-linux.tar.gz /opt/runner/
+RUN tar xzf actions-runner-linux.tar.gz
+RUN rm -f   actions-runner-linux.tar.gz
 
 # copy runner config and OAuth tokens
 COPY .credentials           /opt/runner/
@@ -36,9 +40,6 @@ RUN chown -R runner:developers  /opt/runner/.*
 
 # setup doas to run pmbootstrap and do various mounts and losetup...
 RUN echo 'permit nopass keepenv :developers' > /etc/doas.conf
-
-# set hostname
-RUN echo arm64builder > /etc/hostname
 
 # clone pmbootstrap
 WORKDIR /opt
