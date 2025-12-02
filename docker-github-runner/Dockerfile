@@ -1,5 +1,10 @@
 FROM ubuntu:24.04
 
+# Use Yandex mirrors to speed up 'apt update/upgrade' in containers by a lot
+#  and reduce load on global mirrors as well. This speeds up image build a lot.
+COPY yandex.sources /etc/apt/sources.list.d/
+RUN rm /etc/apt/sources.list.d/ubuntu.sources
+
 # Linux build deps
 RUN DEBIAN_FRONTEND=noninteractive apt update && apt -y upgrade && \
 	apt install -y bc bison build-essential device-tree-compiler \

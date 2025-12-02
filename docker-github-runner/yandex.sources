@@ -1,0 +1,5 @@
+Types: deb
+URIs: http://mirror.yandex.ru/ubuntu/
+Suites: noble noble-updates noble-backports noble-security
+Components: main universe restricted multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
