@@ -53,6 +53,14 @@ RUN ln -sf /opt/pmbootstrap/pmbootstrap.py /usr/local/bin/pmbootstrap
 RUN chown -R runner:developers  /opt/pmbootstrap
 RUN chmod -R g+w /opt/pmbootstrap
 
+# We will need "mkbootimg" to create Android boot images.
+# Let's use official tool from Google for that.
+WORKDIR /opt
+RUN git clone https://android.googlesource.com/platform/system/tools/mkbootimg
+RUN ln -sf /opt/mkbootimg/mkbootimg.py       /usr/local/bin/mkbootimg
+RUN ln -sf /opt/mkbootimg/repack_bootimg.py  /usr/local/bin/repack_bootimg
+RUN ln -sf /opt/mkbootimg/unpack_bootimg.py  /usr/local/bin/unpack_bootimg
+
 VOLUME [ "/home/runner" ]
 
 USER runner:developers
