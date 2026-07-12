@@ -6,9 +6,20 @@ FROM ubuntu:26.04
 #COPY yandex.sources /etc/apt/sources.list.d/
 #RUN rm /etc/apt/sources.list.d/ubuntu.sources
 
+# Install official docker-cli package for container to be able to use docker client
+RUN DEBIAN_FRONTEND=noninteractive apt update
+RUN DEBIAN_FRONTEND=noninteractive apt -y upgrade
+RUN DEBIAN_FRONTEND=noninteractive apt install -y ca-certificates curl
+RUN install -m 0755 -d /etc/apt/keyrings
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+RUN chmod a+r /etc/apt/keyrings/docker.asc
+COPY docker.sources /etc/apt/sources.list.d/
+RUN DEBIAN_FRONTEND=noninteractive apt update
+RUN DEBIAN_FRONTEND=noninteractive apt install -y docker-ce-cli
+
 # Linux build deps
-RUN DEBIAN_FRONTEND=noninteractive apt update && apt -y upgrade && \
-	apt install -y bc bison build-essential device-tree-compiler \
+RUN DEBIAN_FRONTEND=noninteractive apt install -y \
+	bc bison build-essential device-tree-compiler \
 	flex git kmod libncurses-dev libssl-dev python3 pahole libicu-dev \
 	zstd bsdmainutils diffutils elfutils kmod linux-headers-generic \
 	libelf-dev clang-22 lld-22
@@ -33,6 +44,9 @@ RUN useradd -c "GitHub actions runner user" \
 	--home-dir /home/runner --no-create-home \
 	--groups developers --no-user-group \
 	--shell /bin/bash --uid 10001 runner
+# to be able to access docker socket
+RUN groupadd --gid 111 docker
+RUN gpasswd -a runner docker
 
 # copy and extract actions-runner application
 WORKDIR /opt/runner
@@ -72,6 +86,6 @@ RUN ln -sf /opt/mkbootimg/unpack_bootimg.py  /usr/local/bin/unpack_bootimg
 
 VOLUME [ "/home/runner" ]
 
-USER runner:developers
+USER runner
 WORKDIR /opt/runner
 CMD [ "/opt/runner/run.sh" ]
