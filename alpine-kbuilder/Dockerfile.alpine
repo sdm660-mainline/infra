@@ -1,0 +1,67 @@
+FROM alpine:3.24
+
+# Local repositories mirror to speed up things (can be switched to yandex mirrors)
+RUN echo "http://192.168.20.3/alpine/v3.24/main" > /etc/apk/repositories 
+RUN echo "http://192.168.20.3/alpine/v3.24/community" >> /etc/apk/repositories
+RUN apk update
+RUN apk upgrade -a
+
+COPY local_custom.sh /etc/profile.d/
+RUN chmod 0755 /etc/profile.d/local_custom.sh
+
+# Add user & group for runner (GID & UID match the same user on host)
+RUN apk add shadow
+RUN groupadd --gid 1003 developers
+RUN useradd -c "GitHub actions runner user" \
+        --home-dir /home/runner --create-home \
+        --groups developers --no-user-group \
+        --shell /bin/sh --uid 10001 runner
+
+# Kernel build deps
+RUN apk add \
+	bash bison clang clang-libclang \
+	diffutils elfutils-dev findutils \
+	flex kmod linux-headers \
+	lld llvm openssl-dev \
+	pahole perl installkernel \
+	python3 \
+	rust rust-bindgen rust-src rustfmt \
+	sed zstd
+# U-Boot build deps
+RUN apk add xxd gnutls-dev
+# Some requirements for dtbs checking, pmbootstrap and manual work
+RUN apk add \
+	dtc dtc-dev file grep htop fastfetch \
+	kpartx nano nano-syntax \
+	python3-dev py3-libfdt swig \
+	sudo-rs
+
+# Activate nano-syntax extensions
+RUN echo 'include /usr/share/nano/*.nanorc' >> /etc/nanorc
+
+# Allow group developers to use sudo to run pmbootstrap and do various mounts and losetup
+RUN mkdir -p /etc/sudoers.d/
+RUN echo '@includedir /etc/sudoers.d' >> /etc/sudoers
+RUN echo '%developers ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/developers-all
+
+# Clone pmbootstrap
+#WORKDIR /opt
+# prefer localized mirror: sometimes pmOS gitlab is not accessible
+##RUN git clone https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
+#RUN git clone https://newgit.minlexx.ru/alexeymin/pmbootstrap-mirror.git pmbootstrap
+#RUN ln -sf /opt/pmbootstrap/pmbootstrap.py /usr/local/bin/pmbootstrap
+#RUN chown -R runner:developers /opt/pmbootstrap
+#RUN chmod -R g+w /opt/pmbootstrap
+
+# We will need "mkbootimg" to create Android boot images.
+# Let's use official tool from Google for that.
+#WORKDIR /opt
+#RUN git clone https://android.googlesource.com/platform/system/tools/mkbootimg
+#RUN ln -sf /opt/mkbootimg/mkbootimg.py       /usr/local/bin/mkbootimg
+#RUN ln -sf /opt/mkbootimg/repack_bootimg.py  /usr/local/bin/repack_bootimg
+#RUN ln -sf /opt/mkbootimg/unpack_bootimg.py  /usr/local/bin/unpack_bootimg
+
+VOLUME ["/mnt/linux"]
+
+USER runner
+WORKDIR /mnt/linux
