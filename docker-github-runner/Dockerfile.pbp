@@ -1,9 +1,10 @@
 FROM ubuntu:26.04
 
-# Use Yandex mirrors to speed up 'apt update/upgrade' in containers by a lot
+# Use mirrors to speed up 'apt update/upgrade' in containers by a lot
 #  and reduce load on global mirrors as well. This speeds up image build a lot.
 # Damn Yandex ubuntu mirror doesn't have arm64 binaries at all
 #COPY yandex.sources /etc/apt/sources.list.d/
+#COPY unet-by.sources /etc/apt/sources.list.d/
 #RUN rm /etc/apt/sources.list.d/ubuntu.sources
 
 # Install official docker-cli package for container to be able to use docker client
@@ -28,7 +29,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y \
 	libfdt-dev python3-dev python3-libfdt python3-venv swig
 # useful utils for manual work and pmbootstrap deps
 RUN DEBIAN_FRONTEND=noninteractive apt install -y \
-	nano htop fastfetch sudo kpartx
+	nano htop fastfetch sudo kpartx iputils-ping tcptraceroute \
+	bind9-dnsutils file net-tools
 # U-Boot build deps
 RUN DEBIAN_FRONTEND=noninteractive apt install -y xxd libgnutls28-dev
 # GCC Cross-compiler - needed only on x86_64 host
