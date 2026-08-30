@@ -1,0 +1,5 @@
+Types: deb
+URIs: http://mirror.unet.by/ubuntu/
+Suites: resolute resolute-updates resolute-backports resolute-security
+Components: main universe restricted multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
