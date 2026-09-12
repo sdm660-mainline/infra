@@ -30,10 +30,9 @@ RUN apk add \
 # U-Boot build deps
 RUN apk add xxd gnutls-dev
 # Some requirements for dtbs checking, pmbootstrap and manual work
-RUN apk add \
-	dtc dtc-dev file grep htop fastfetch \
-	kpartx nano nano-syntax \
-	python3-dev py3-libfdt swig \
+RUN apk add alpine-sdk \
+	dtc dtc-dev file git git-lfs grep htop fastfetch \
+	kpartx nano nano-syntax python3-dev py3-libfdt swig \
 	sudo-rs
 
 # Activate nano-syntax extensions
