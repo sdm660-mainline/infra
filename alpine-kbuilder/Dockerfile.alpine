@@ -44,21 +44,21 @@ RUN echo '@includedir /etc/sudoers.d' >> /etc/sudoers
 RUN echo '%developers ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/developers-all
 
 # Clone pmbootstrap
-#WORKDIR /opt
+WORKDIR /opt
 # prefer localized mirror: sometimes pmOS gitlab is not accessible
 ##RUN git clone https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
-#RUN git clone https://newgit.minlexx.ru/alexeymin/pmbootstrap-mirror.git pmbootstrap
-#RUN ln -sf /opt/pmbootstrap/pmbootstrap.py /usr/local/bin/pmbootstrap
-#RUN chown -R runner:developers /opt/pmbootstrap
-#RUN chmod -R g+w /opt/pmbootstrap
+RUN git clone https://newgit.minlexx.ru/alexeymin/pmbootstrap-mirror.git pmbootstrap
+RUN ln -sf /opt/pmbootstrap/pmbootstrap.py /usr/local/bin/pmbootstrap
+RUN chown -R runner:developers /opt/pmbootstrap
+RUN chmod -R g+w /opt/pmbootstrap
 
 # We will need "mkbootimg" to create Android boot images.
 # Let's use official tool from Google for that.
-#WORKDIR /opt
-#RUN git clone https://android.googlesource.com/platform/system/tools/mkbootimg
-#RUN ln -sf /opt/mkbootimg/mkbootimg.py       /usr/local/bin/mkbootimg
-#RUN ln -sf /opt/mkbootimg/repack_bootimg.py  /usr/local/bin/repack_bootimg
-#RUN ln -sf /opt/mkbootimg/unpack_bootimg.py  /usr/local/bin/unpack_bootimg
+WORKDIR /opt
+RUN git clone https://android.googlesource.com/platform/system/tools/mkbootimg
+RUN ln -sf /opt/mkbootimg/mkbootimg.py       /usr/local/bin/mkbootimg
+RUN ln -sf /opt/mkbootimg/repack_bootimg.py  /usr/local/bin/repack_bootimg
+RUN ln -sf /opt/mkbootimg/unpack_bootimg.py  /usr/local/bin/unpack_bootimg
 
 VOLUME ["/mnt/linux"]
 
