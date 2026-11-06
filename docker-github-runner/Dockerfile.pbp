@@ -86,7 +86,12 @@ RUN ln -sf /opt/mkbootimg/mkbootimg.py       /usr/local/bin/mkbootimg
 RUN ln -sf /opt/mkbootimg/repack_bootimg.py  /usr/local/bin/repack_bootimg
 RUN ln -sf /opt/mkbootimg/unpack_bootimg.py  /usr/local/bin/unpack_bootimg
 
+# final steps
 VOLUME [ "/home/runner" ]
+
+ENV RUNNER_MANUALLY_TRAP_SIG=1
+ENV ACTIONS_RUNNER_RETURN_VERSION_DEPRECATED_EXIT_CODE=1
+ENV GITHUB_ACTIONS_RUNNER_DOWNLOAD_TIMEOUT=3600
 
 USER runner
 WORKDIR /opt/runner

@@ -74,6 +74,10 @@ RUN chown runner:developers  /opt/runner/.*
 # final steps
 VOLUME [ "/home/runner" ]
 
+ENV RUNNER_MANUALLY_TRAP_SIG=1
+ENV ACTIONS_RUNNER_RETURN_VERSION_DEPRECATED_EXIT_CODE=1
+ENV GITHUB_ACTIONS_RUNNER_DOWNLOAD_TIMEOUT=3600
+
 USER runner
 WORKDIR /opt/runner
 CMD [ "/opt/runner/run.sh" ]
