@@ -74,6 +74,6 @@ RUN chown runner:developers  /opt/runner/.*
 # final steps
 VOLUME [ "/home/runner" ]
 
-USER runner:developers
+USER runner
 WORKDIR /opt/runner
 CMD [ "/opt/runner/run.sh" ]
