@@ -30,7 +30,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y \
 # useful utils for manual work and pmbootstrap deps
 RUN DEBIAN_FRONTEND=noninteractive apt install -y \
 	nano htop fastfetch sudo kpartx iputils-ping tcptraceroute \
-	bind9-dnsutils file net-tools
+	bind9-dnsutils file net-tools traceroute iproute2
 # U-Boot build deps
 RUN DEBIAN_FRONTEND=noninteractive apt install -y xxd libgnutls28-dev
 # GCC Cross-compiler - needed only on x86_64 host
